@@ -1,9 +1,12 @@
 from flask import Flask, render_template, request, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
+from flask_migrate import Migrate
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///todos.db'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False  # Disable modification tracking to suppress a warning
 db = SQLAlchemy(app)
+migrate = Migrate(app, db)
 
 class Todo(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -30,5 +33,9 @@ def delete(id):
     return redirect(url_for('index'))
 
 if __name__ == '__main__':
-    db.create_all()
+    # Use Flask-Migrate to create database tables
+    from flask_migrate import upgrade
+    with app.app_context():
+        upgrade()
+
     app.run(debug=True)
