@@ -47,21 +47,21 @@ pipeline{
             steps{
                 script{
                    withDockerRegistry(credentialsId: 'docker', toolName: 'docker'){   
-                       sh "docker build -t TO-DO . "
-                       sh "dcoker tag TO-DO janakiraman276/TO-DO:latest"
-                       sh "docker psuh janakiraman276/TO-DO:latest"
+                       sh "docker build -t to-do . "
+                       sh "docker tag to-do janakiraman276/to-do:latest"
+                       sh "docker push janakiraman276/to-do:latest"
                     }
                 }
             }
         }
         stage("TRIVY"){
             steps{
-                sh "trivy image janakiraman276/TO-DO:latest > trivy.txt" 
+                sh "trivy image janakiraman276/to-do:latest > trivy.txt" 
             }
         }
         stage("Deploy to container"){
             steps{
-                sh "docker run -d --name TO-DO -p 5000:5000 janakiraman276/TO-DO:latest"
+                sh "docker run -d --name to-do -p 5000:5000 janakiraman276/to-do:latest"
             } 
         }
     }
